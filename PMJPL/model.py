@@ -1,4 +1,3 @@
-
 """
 MOD16 model of evapotranspiration
 
@@ -42,6 +41,7 @@ from PTJPL import calculate_relative_surface_wetness
 from PTJPL import RH_THRESHOLD, MIN_FWET
 
 from .constants import *
+from .exceptions import *
 from .PMJPL_parameter_from_IGBP import PMJPL_parameter_from_IGBP
 from .calculate_gamma import calculate_gamma
 from .soil_moisture_constraint import calculate_fSM
@@ -106,8 +106,8 @@ def PMJPL(
     upscale_to_daylight: bool = False,
     Rn_daylight_Wm2: Union[Raster, np.ndarray] = None,
     day_of_year: np.ndarray = None,
-    regenerate_net_radiation: bool = False
-    ) -> Dict[str, Raster]:
+    regenerate_net_radiation: bool = False,
+    offline_mode: bool = False) -> Dict[str, Raster]:
     """
     MOD16 Penman-Monteith Evapotranspiration Model (Version 1.5, Collection 6)
 
@@ -212,6 +212,27 @@ def PMJPL(
     """
     results = {}
 
+    # Check for missing variables in offline mode before any GEOS-5 FP retrievals
+    if offline_mode:
+        missing_vars = []
+        if Ta_C is None:
+            missing_vars.append("Ta_C (air temperature)")
+        if Tmin_C is None:
+            missing_vars.append("Tmin_C (minimum temperature)")
+        if RH is None:
+            missing_vars.append("RH (relative humidity)")
+        if SWin_Wm2 is None:
+            missing_vars.append("SWin_Wm2 (shortwave radiation)")
+        if elevation_m is None:
+            missing_vars.append("elevation_m (elevation)")
+        if IGBP is None:
+            missing_vars.append("IGBP (land cover classification)")
+
+        if missing_vars:
+            raise MissingOfflineParameter(
+                f"The following variables are missing in offline mode: {', '.join(missing_vars)}"
+            )
+
     if geometry is None and isinstance(NDVI, Raster):
         geometry = NDVI.geometry
 
@@ -253,6 +274,26 @@ def PMJPL(
 
     if RH is None:
         raise ValueError("relative humidity (RH) not given")
+        
+    if offline_mode:
+        missing_vars = []
+        if Ta_C is None:
+            missing_vars.append("Ta_C (air temperature)")
+        if Tmin_C is None:
+            missing_vars.append("Tmin_C (minimum temperature)")
+        if RH is None:
+            missing_vars.append("RH (relative humidity)")
+        if SWin_Wm2 is None:
+            missing_vars.append("SWin_Wm2 (shortwave radiation)")
+        if elevation_m is None:
+            missing_vars.append("elevation_m (elevation)")
+        if IGBP is None:
+            missing_vars.append("IGBP (land cover classification)")
+
+        if missing_vars:
+            raise MissingOfflineParameter(
+                f"The following variables are missing in offline mode: {', '.join(missing_vars)}"
+            )
 
     if elevation_m is None and geometry is not None:
         elevation_m = NASADEM.elevation_m(geometry=geometry)

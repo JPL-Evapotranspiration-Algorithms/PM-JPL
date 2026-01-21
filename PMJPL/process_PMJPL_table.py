@@ -24,8 +24,8 @@ logger = logging.getLogger(__name__)
 def process_PMJPL_table(
         input_df: DataFrame,
         upscale_to_daylight: bool = False,
-        regenerate_net_radiation: bool = False
-        ) -> DataFrame:
+        regenerate_net_radiation: bool = False,
+        offline_mode: bool = False) -> DataFrame:
     """
     Processes an input DataFrame to prepare all required variables for the PM-JPL model,
     runs the model, and returns a DataFrame with the model outputs appended as new columns.
@@ -197,7 +197,8 @@ def process_PMJPL_table(
         elevation_m=elevation_m,
         time_UTC=time_UTC,
         upscale_to_daylight=upscale_to_daylight,
-        regenerate_net_radiation=regenerate_net_radiation
+        regenerate_net_radiation=regenerate_net_radiation,
+        offline_mode=offline_mode
     )
 
     output_df = input_df.copy()
