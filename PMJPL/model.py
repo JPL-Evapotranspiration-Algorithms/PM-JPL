@@ -215,22 +215,21 @@ def PMJPL(
     # Check for missing variables in offline mode before any GEOS-5 FP retrievals
     if offline_mode:
         missing_vars = []
+        
         if Ta_C is None:
-            missing_vars.append("Ta_C (air temperature)")
+            missing_vars.append("Ta_C")
         if Tmin_C is None:
-            missing_vars.append("Tmin_C (minimum temperature)")
+            missing_vars.append("Tmin_C")
         if RH is None:
-            missing_vars.append("RH (relative humidity)")
-        if SWin_Wm2 is None:
-            missing_vars.append("SWin_Wm2 (shortwave radiation)")
+            missing_vars.append("RH")
         if elevation_m is None:
-            missing_vars.append("elevation_m (elevation)")
+            missing_vars.append("elevation_m")
         if IGBP is None:
-            missing_vars.append("IGBP (land cover classification)")
+            missing_vars.append("IGBP")
 
         if missing_vars:
             raise MissingOfflineParameter(
-                f"The following variables are missing in offline mode: {', '.join(missing_vars)}"
+                f"The following PM-JPL inputs are missing in offline mode: {', '.join(missing_vars)}"
             )
 
     if geometry is None and isinstance(NDVI, Raster):
@@ -278,17 +277,17 @@ def PMJPL(
     if offline_mode:
         missing_vars = []
         if Ta_C is None:
-            missing_vars.append("Ta_C (air temperature)")
+            missing_vars.append("Ta_C")
         if Tmin_C is None:
-            missing_vars.append("Tmin_C (minimum temperature)")
+            missing_vars.append("Tmin_C")
         if RH is None:
-            missing_vars.append("RH (relative humidity)")
+            missing_vars.append("RH")
         if SWin_Wm2 is None:
-            missing_vars.append("SWin_Wm2 (shortwave radiation)")
+            missing_vars.append("SWin_Wm2")
         if elevation_m is None:
-            missing_vars.append("elevation_m (elevation)")
+            missing_vars.append("elevation_m")
         if IGBP is None:
-            missing_vars.append("IGBP (land cover classification)")
+            missing_vars.append("IGBP")
 
         if missing_vars:
             raise MissingOfflineParameter(
