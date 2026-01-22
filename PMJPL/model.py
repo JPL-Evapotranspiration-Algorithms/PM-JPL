@@ -274,26 +274,6 @@ def PMJPL(
     if RH is None:
         raise ValueError("relative humidity (RH) not given")
         
-    if offline_mode:
-        missing_vars = []
-        if Ta_C is None:
-            missing_vars.append("Ta_C")
-        if Tmin_C is None:
-            missing_vars.append("Tmin_C")
-        if RH is None:
-            missing_vars.append("RH")
-        if SWin_Wm2 is None:
-            missing_vars.append("SWin_Wm2")
-        if elevation_m is None:
-            missing_vars.append("elevation_m")
-        if IGBP is None:
-            missing_vars.append("IGBP")
-
-        if missing_vars:
-            raise MissingOfflineParameter(
-                f"The following variables are missing in offline mode: {', '.join(missing_vars)}"
-            )
-
     if elevation_m is None and geometry is not None:
         elevation_m = NASADEM.elevation_m(geometry=geometry)
 
